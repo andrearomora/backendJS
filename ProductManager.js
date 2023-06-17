@@ -1,6 +1,6 @@
-const fs = require('fs')
+import fs from 'fs'
 
-class ProductManager { 
+export class ProductManager { 
 
     constructor(filename) {
         this.path = filename
@@ -11,9 +11,9 @@ class ProductManager {
         try{
             const products = await fs.promises.readFile(this.path, this.format)
             const productsObj = JSON.parse(products)
+            console.log(products)
             return productsObj
         }catch(e){
-            console.log('No products found')
             return []
         }
     }
@@ -132,24 +132,24 @@ class ProductManager {
     }
 }
 
-async function run() {
-    const manager = new ProductManager('products.json')
-    console.log(await manager.getProducts())
-    await manager.addProduct('producto prueba','Este es un producto prueba',200,'Sin imagen','abc123',25)
-    console.log(await manager.getProducts())
-    await manager.getProductById(1)
-    await manager.getProductById(10) //Error
-    const prodToUpdate = {
-        title: 'producto prueba del Update',
-        description: 'Este es un producto prueba del Update' ,
-        price: 250,
-        thumbnail: 'Sin imagen del Update',
-        code: 'abc1234',
-        stock: 26
-    }
-    await manager.updateProduct(1,prodToUpdate)
-    await manager.deleteProduct(3) //Error
-    await manager.deleteProduct(1)
-    console.log(await manager.getProducts())
-}
-run()
+// async function run() {
+//     const manager = new ProductManager('products.json')
+//     console.log(await manager.getProducts())
+//     await manager.addProduct('producto prueba','Este es un producto prueba',200,'Sin imagen','abc123',25)
+//     console.log(await manager.getProducts())
+//     await manager.getProductById(1)
+//     await manager.getProductById(10) //Error
+//     const prodToUpdate = {
+//         title: 'producto prueba del Update',
+//         description: 'Este es un producto prueba del Update' ,
+//         price: 250,
+//         thumbnail: 'Sin imagen del Update',
+//         code: 'abc1234',
+//         stock: 26
+//     }
+//     await manager.updateProduct(1,prodToUpdate)
+//     await manager.deleteProduct(3) //Error
+//     await manager.deleteProduct(1)
+//     console.log(await manager.getProducts())
+// }
+// run()
