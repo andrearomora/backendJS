@@ -1,4 +1,3 @@
-import { log } from 'console'
 import fs from 'fs'
 
 class FileManager {
@@ -9,13 +8,11 @@ class FileManager {
     }
 
     getProducts = async () => { 
-        try{
-            const products = await fs.promises.readFile(this.path, this.format)
-            const productsObj = JSON.parse(products)
-            return productsObj
-        }catch(e){
+        return fs.promises.readFile(this.path, 'utf-8')
+        .then(r => JSON.parse(r))
+        .catch(e => {
             return []
-        }
+        })
     }
 
     getNextID = async () => {
@@ -52,7 +49,7 @@ class FileManager {
 
     addProduct = async (title,description,price,thumbnail,code,stock,status,category) => {
         try {
-            if(title=='' || description=='' || price=='' || thumbnail=='' || code=='' || stock=='' || code=='' || category==''){
+            if(title=='' || description=='' || price=='' || thumbnail=='' || code=='' || stock=='' || category==''){
                 return console.log("All fields are required")
                 }else{
                     //Assigning the field status as a boolean

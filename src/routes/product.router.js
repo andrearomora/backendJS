@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import ProductManager from '../manager/ProductManager.js'
+import ProductManager from '../DAO/manager/ProductManager.js'
 
 const router = Router()
 const manager = new ProductManager()
@@ -19,9 +19,9 @@ router.get('/', async (req, res) => {
         for (let i = 0; i < limit && i < products.length; i++) {
             productsFiltered.push(products[i])
         }
-        res.json(productsFiltered)
+        res.send(productsFiltered)
     }else{
-        res.json(products)
+        res.send(products)
     }
 })
 
@@ -29,7 +29,7 @@ router.get('/:pid', async (req, res) => {
     let id = parseInt(req.params.pid)
     let product = await manager.getProductById(id)
     
-    res.json(product)
+    res.send(product)
     
 })
 
@@ -49,7 +49,7 @@ router.put('/:pid', async (req, res) => {
 
     let product = await manager.updateProduct(id,prodUpdate)
 
-    res.json(product)
+    res.send(product)
     
 })
 
