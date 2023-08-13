@@ -1,9 +1,20 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
-const productModel = mongoose.model('products', new mongoose.Schema({
-    name: { type: String, require: true },
-    stock: Number,
-    price: Number
-}))
+const productCollection = 'products'
+
+const productSchema = new mongoose.Schema({
+    title: { type: String, require: true },
+    description: { type: String, require: true },
+    price: { type: Number, require: true },
+    thumbnail: { type: String, require: true },
+    code: { type: String, require: true, unique: true },
+    stock: { type: Number, require: true },
+    status: Boolean,
+    category: { type: String, require: true }
+})
+
+mongoose.set('strictQuery', false)
+
+const productModel = mongoose.model(productCollection, productSchema)
 
 export default productModel

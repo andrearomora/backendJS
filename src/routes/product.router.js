@@ -1,14 +1,16 @@
 import { Router } from 'express'
-import ProductManager from '../DAO/manager/ProductManager.js'
+import productModel from '../DAO/mongoManager/product.model.js'
+//import ProductManager from '../DAO/manager/ProductManager.js'
 
 const router = Router()
-const manager = new ProductManager()
+//const manager = new ProductManager()
 
 router.post('/', async (req,res) => {
- 
-    await manager.addProduct(req.query.title,req.query.description,req.query.price,req.query.thumbnail,req.query.code,req.query.stock,req.query.status,req.query.category)
-    let products = await manager.getProducts()
-    res.json(products)
+    
+    const newProduct = req.body
+
+    const productCreated = new productModel(newProduct)
+    await productCreated.save()
 })
 
 router.get('/', async (req, res) => {
