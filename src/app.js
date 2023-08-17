@@ -3,9 +3,9 @@ import handlebars from 'express-handlebars'
 import { Server } from 'socket.io'
 import productRouter from './routes/product.router.js'
 import cartRouter from './routes/cart.router.js'
-import chatRouter from './routes/chat.router.js'
+//import chatRouter from './routes/chat.router.js'
 import viewsRouter from './routes/views.router.js'
-import ProductManager from './DAO/manager/ProductManager.js'
+//import ProductManager from './DAO/manager/ProductManager.js'
 import __dirname from './utils.js'
 import mongoose from 'mongoose'
 import productModel from './DAO/mongoManager/product.model.js'
@@ -14,33 +14,36 @@ import chatModel from './DAO/mongoManager/chat.model.js'
 
 
 const app = express()
-app.use(express.urlencoded({extended: true}))
+app.use("/public", express.static(__dirname + "/public"))
 app.use(express.json())
-app.use('/public', express.static(__dirname + '/public'))
 app.use(express.urlencoded({extended: true}))
-app.use('/chat', chatRouter)
+
+
+
 
 app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
 
 
+
+//app.use('/chat', chatRouter)
 app.use('/', viewsRouter)
-// app.use('/api/products', productRouter)
-// app.use('/api/carts', cartRouter)
+app.use('/api/products', productRouter)
+app.use('/api/carts', cartRouter)
 
 
 // -------------------
 //Show all products
-app.get('/', async(req, res) =>{
-    try{
-        const products = await productModel.find()
-        res.send({result: 'success', payload: products})
-    } catch {
-        console.error(error);
-        res.send({result: 'error', error})
-    }
-})
+// app.get('/', async(req, res) =>{
+//     try{
+//         const products = await productModel.find()
+//         res.send({result: 'success', payload: products})
+//     } catch {
+//         console.error(error);
+//         res.send({result: 'error', error})
+//     }
+// })
 //Insert one product
 app.post('/', async(req,res) => {
     const result = await productModel.create(req.body)

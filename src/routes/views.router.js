@@ -6,8 +6,18 @@ import chatModel from '../DAO/mongoManager/chat.model.js'
 const router = Router()
 //const productManager = new ProductManager()
 
-router.get('/', (req,res) => {
-    res.render('index', {})
+router.get('/', async (req,res) => {
+    try{
+        const products = await productModel.find()
+        res.render('index', {
+            style: 'navbar.css',
+            title: 'Home'
+        })
+        //res.send({result: 'success', payload: products})
+    } catch (error){
+        console.error(error);
+        res.send({result: 'error', error})
+    }
 })
 
 router.get('/chat', async (req,res) => {
@@ -16,7 +26,7 @@ router.get('/chat', async (req,res) => {
 })
 
 router.get('/products', async (req, res) => {
-    const products = await productManager.list()
+    const products = await productModel.find().lean().exec()
     res.render('products', { products })
 })
 

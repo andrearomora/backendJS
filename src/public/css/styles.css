@@ -1,0 +1,88 @@
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace;
+  }
+
+  @import url("https://fonts.googleapis.com/css?family=Montserrat");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap");
+.center {
+  text-align: center;
+  margin: 0 auto; }
+h1 {
+  font-size: 30px;
+  font-weight: 700; }
+
+h2 {
+  font-size: 30px;
+  font-weight: 700; }
+
+h3, h4 {
+  font-size: 20px;
+  font-weight: 500; }
+
+p, label, option, input, select {
+  font-size: 14px;
+  font-weight: 400; }
+
+.p__destacar p {
+  font-size: 18px;
+  font-weight: 800; }
+
+.btn, .btn:hover {
+  background-color: #11b28e;
+  color: whitesmoke;
+  padding: 10px 30px;
+  font-weight: 400;
+  font-size: 20px;
+  border-radius: 5px;
+  border-color: #11b28e;
+  text-decoration: none; }
+  .btn:hover {
+    background-color: #01a27f; }
+
+
+
+/*END TEXT*/
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat';
+  font-family: 'Montserrat', sans-serif; }
+.nav-link {
+    text-align: center; 
+}
+
+/**/
+
+.header__logo {
+    height: 50px; }
+
+.header__iconos {
+    text-align: center; }
+
+.header__iconos a {
+    padding: 5px;
+    color: #2C2C2C;
+    font-size: 24px;
+    text-decoration: none; }
+
+.header__iconos a:hover {
+    padding: 5px;
+    color: #2C2C2C;
+    font-size: 24px;
+    text-decoration: none; }
+
+.header__iconos span {
+    font-size: 14px;
+}
