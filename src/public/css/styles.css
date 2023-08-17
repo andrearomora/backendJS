@@ -12,8 +12,9 @@ body {
       monospace;
   }
 
-  @import url("https://fonts.googleapis.com/css?family=Montserrat");
+@import url("https://fonts.googleapis.com/css?family=Montserrat");
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap");
+
 .center {
   text-align: center;
   margin: 0 auto; }
@@ -48,8 +49,6 @@ p, label, option, input, select {
   text-decoration: none; }
   .btn:hover {
     background-color: #01a27f; }
-
-
 
 /*END TEXT*/
 
