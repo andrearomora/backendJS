@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
     code: { type: String, require: true, unique: true },
     stock: { type: Number, require: true },
     status: Boolean,
-    category: { type: String, require: true }
+    category: { type: String, enum: ["totebags","adjustables"],require: true }
 })
 
 mongoose.set('strictQuery', false)

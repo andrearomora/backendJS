@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:cid', async (req, res) => {
     const id = parseInt(req.params.idc)
-    const result = await cartModel.find({_id : id}).lean().exec()
+    const result = await cartModel.findOne({_id : id}).lean().exec().populate('products.product')
     res.send(result)
 })
 
@@ -32,9 +32,13 @@ router.post('/', async (req, res) => {
 router.post('/:cid/product/:pid', async (req, res) => {
     const cid = parseInt(req.params.cid)
     const pid = parseInt(req.params.pid)
+    const quantity = parseInt(req.body.quantity)
 
-    // const result = await cartManager.create()
-    // res.send(result)
+    const cart = await cartModel.findOne({_id:cid})
+    cart.products.push({product: pid, quantity})
+    await cartModel.updateOne({cid,cart})
+
+    res.send(cart)
 })
 
 export default router
