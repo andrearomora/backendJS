@@ -8,12 +8,24 @@ const router = Router()
 
 router.get('/', async (req,res) => {
     try{
-        const products = await productModel.find()
-        res.render('index', {
-            style: 'navbar.css',
-            title: 'Home'
-        })
-        //res.send({result: 'success', payload: products})
+       
+        let limit = parseInt(req.query?.limit || 10) 
+        let page = parseInt(req.query?.page || 1) 
+        let sort = parseInt(req.query?.sort)
+        let query = parseInt(req.query?.query)
+
+        const options = {
+            page: page,
+            limit: limit,
+            sort: sort,
+            lean: true
+        }
+
+        const products = await productModel.paginate({query}, options)
+
+        res.render('index', products)
+        console.log({result: 'success', payload: JSON.stringify(products)})
+        
     } catch (error){
         console.error(error);
         res.send({result: 'error', error})

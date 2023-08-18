@@ -12,15 +12,27 @@ router.post('/', async (req,res) => {
 })
 
 router.get('/', async (req, res) => {
-    let limit = parseInt(req.query.limit)
-    let products = await productModel.find().lean().exec()
+    // let limit = parseInt(req.query?.limit || 10) 
+    // let page = parseInt(req.query?.page || 1) 
+    // let sort = parseInt(req.query?.sort)
+    // let query = parseInt(req.query?.query)
 
-    if(limit){
-        let productsFiltered = await productModel.find().limit(limit).lean().exec()
-        res.send(productsFiltered)
-    }else{
-        res.send(products)
-    }
+    // const options = {
+    //     page: page,
+    //     limit: limit,
+    //     sort: sort,
+    //     lean: true
+    // }
+
+    // const products = await productModel.paginate({query}, options)
+    // res.send(products)
+
+    // if(limit){
+    //     let productsFiltered = await productModel.find().limit(limit).lean().exec()
+    //     res.send(productsFiltered)
+    // }else{
+    //     res.send(products)
+    //}
     // if(limit){
     //     let productsFiltered = []
     //     for (let i = 0; i < limit && i < products.length; i++) {
