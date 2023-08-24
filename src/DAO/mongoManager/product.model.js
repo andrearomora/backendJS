@@ -14,6 +14,7 @@ const productSchema = new mongoose.Schema({
     category: { type: String, enum: ["totebags","adjustables"],require: true }
 })
 
+
 mongoose.set('strictQuery', false)
 productSchema.plugin(mongoosePaginate)
 

@@ -35,6 +35,7 @@ router.post('/:cid/product/:pid', async (req, res) => {
     const quantity = parseInt(req.body.quantity)
 
     const cart = await cartModel.findOne({_id:cid})
+    const exist = await cartModel.
     cart.products.push({product: pid, quantity})
     await cartModel.updateOne({cid,cart})
 

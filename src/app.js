@@ -63,7 +63,7 @@ mongoose.connect(URL, {
     .then( async ()=>{
         console.log('DB Connected!!')
         const products = await productModel.find()
-        //console.log(JSON.stringify(products, null, 2, '/t'))
+        const cart = await cartModel.create()
         
         io.on('connection', socket => {
             socket.on('new-product', async data => {
