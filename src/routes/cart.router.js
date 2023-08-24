@@ -10,8 +10,8 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/:cid', async (req, res) => {
-    const id = parseInt(req.params.idc)
-    const result = await cartModel.findOne({_id : id}).lean().exec().populate('products.product')
+    const id = req.params.idc
+    const result = await cartModel.findOne({_id : id}).populate('products.product')
     res.send(result)
 })
 
@@ -24,22 +24,23 @@ router.get('/:idc', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    const cartGenerated = new cartModel()
-    await cartGenerated.save()
+    const cartGenerated = await cartModel.create({products: []})
+    //await cartGenerated.save()
     res.send(cartGenerated)
 })
 
 router.post('/:cid/product/:pid', async (req, res) => {
-    const cid = parseInt(req.params.cid)
-    const pid = parseInt(req.params.pid)
-    const quantity = parseInt(req.body.quantity)
+    const cid = req.params.cid
+    const pid = req.params.pid
+    const quantity = parseInt(req.body.quantity) || 1
 
     const cart = await cartModel.findOne({_id:cid})
-    const exist = await cartModel.
     cart.products.push({product: pid, quantity})
     await cartModel.updateOne({cid,cart})
 
     res.send(cart)
 })
+
+
 
 export default router

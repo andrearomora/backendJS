@@ -3,34 +3,41 @@
 <hr>
 <table border="1">
     <thead>
-        <td>ID</td>
         <td>Title</td>
+        <td>Image</td>
         <td>Description</td>
         <td>Price</td>
-        <td>Thumbnail</td>
         <td>Code</td>
         <td>Stock</td>
         <td>Category</td>
         <td>Add to cart</td>
     </thead>
     <tbody>
-        {{#each products}}
+        {{#each docs}}
             <tr>
-                <td>{{this._id}}</td>
                 <td>{{this.title}}</td>
+                <td><img src="{{this.thumbnail}}" alt="" style="width: 100px;"></td>
                 <td>{{this.description}}</td>
-                <td>{{this.price}}</td>
-                <td>{{this.thumbnail}}</td>
+                <td>$ {{this.price}}</td>
                 <td>{{this.code}}</td>
                 <td>{{this.stock}}</td>
                 <td>{{this.category}}</td>
-                <td><a href="/{{this.cart._id}}/product/:{{this.id}}">Add to cart</a></td>
+                <td>
+                    <button
+                    onclick="addProduct('{{this._id}}')"
+                    class="btn btn-primary"><i class="fa-solid fa-cart-plus"></i>
+                    </button>
+                </td>
             </tr>
         {{/each}}
     </tbody>
 </table>
-<button><a href="{{this.prevLink}}">PREVIOUS</a></button>
-<a href="{{this.page}}"></a>
-<button><a href="{{this.nextLink}}">NEXT</a></button>
+{{#if hasPrevPage}}
+    <button><a href="{{prevLink}}">PREVIOUS</a></button>
+{{/if}}
+<a href="{{page}}"></a>
+{{#if hasNextPage}}
+    <button><a href="{{nextLink}}">NEXT</a></button>
+{{/if}}
 
-
+<script src="../public/cart.js"></script>

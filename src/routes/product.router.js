@@ -25,6 +25,10 @@ router.get('/', async (req, res) => {
     // }
 
     // const products = await productModel.paginate({query}, options)
+    
+    // products.prevLink =  products.hasPrevPage ? `/?page=${products.prevPage}&limit=${limit}` : ''
+    // products.nextLink =  products.hasNextPage ? `/?page=${products.nextPage}&limit=${limit}` : ''
+
     // res.send(products)
 
     // if(limit){

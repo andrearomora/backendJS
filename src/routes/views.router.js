@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import productModel from '../DAO/mongoManager/product.model.js'
+import cartModel from '../DAO/mongoManager/cart.model.js'
 import chatModel from '../DAO/mongoManager/chat.model.js'
 //import ProductManager from '../DAO/manager/ProductManager.js'
 
@@ -7,29 +8,11 @@ const router = Router()
 //const productManager = new ProductManager()
 
 router.get('/', async (req,res) => {
-    try{
-       
-        let limit = parseInt(req.query?.limit || 10) 
-        let page = parseInt(req.query?.page || 1) 
-        let sort = parseInt(req.query?.sort)
-        let query = parseInt(req.query?.query)
 
-        const options = {
-            page: page,
-            limit: limit,
-            sort: sort,
-            lean: true
-        }
+    const products = await productModel.find().lean().exec()
+    res.render('index', products)
+    console.log({result: 'success', payload: JSON.stringify(products)})
 
-        const products = await productModel.paginate({query}, options)
-
-        res.render('index', products)
-        console.log({result: 'success', payload: JSON.stringify(products)})
-        
-    } catch (error){
-        console.error(error);
-        res.send({result: 'error', error})
-    }
 })
 
 router.get('/chat', async (req,res) => {
@@ -37,9 +20,44 @@ router.get('/chat', async (req,res) => {
     res.render('chat', {messages})
 })
 
+router.get('/cart/:cid', async (req,res) => {
+    const cid = req.params?.cid
+    const cart = await cartModel.findOne({_id:cid}).populate('products.product')
+    console.log(JSON.stringify(cart))
+    res.render('cart', {cart})
+})
+
 router.get('/products', async (req, res) => {
-    const products = await productModel.find().lean().exec()
-    res.render('products', { products })
+    
+    const limit = parseInt(req.query?.limit || 10) 
+    const page = parseInt(req.query?.page || 1) 
+    const sort = parseInt(req.query?.sort)
+    const queryParams = req.query?.query || ''
+    const query = {}
+
+    if (queryParams){
+        const field = queryParams.split(',')[0]
+        const value = queryParams.split(',')[1]
+
+        if(!isNaN(parseInt(value))) value = parseInt(value)
+
+        query[field] = value
+
+    }
+    //const cartID = await cartModel.findOne({})
+
+    const result = await productModel.paginate(query, {
+        page,
+        limit,
+        sort,
+        lean: true
+    })
+    
+    result.prevLink =  result.hasPrevPage ? `/products/?page=${result.prevPage}&limit=${limit}` : ''
+    result.nextLink =  result.hasNextPage ? `/products/?page=${result.nextPage}&limit=${limit}` : ''
+
+    res.render('products', result)
+    console.log(JSON.stringify(result))
 })
 
 router.get('/products-realtime', async (req, res) => {
