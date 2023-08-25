@@ -12,39 +12,21 @@ import productModel from './DAO/mongoManager/product.model.js'
 import cartModel from './DAO/mongoManager/cart.model.js'
 import chatModel from './DAO/mongoManager/chat.model.js'
 
-
 const app = express()
 app.use("/public", express.static(__dirname + "/public"))
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-
-
-
 
 app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
 
 
-
-//app.use('/chat', chatRouter)
 app.use('/', viewsRouter)
 app.use('/api/products', productRouter)
 app.use('/api/carts', cartRouter)
 
 
-// -------------------
-//Show all products
-// app.get('/', async(req, res) =>{
-//     try{
-//         const products = await productModel.find()
-//         res.send({result: 'success', payload: products})
-//     } catch {
-//         console.error(error);
-//         res.send({result: 'error', error})
-//     }
-// })
-//Insert one product
 app.post('/', async(req,res) => {
     const result = await productModel.create(req.body)
     res.send({status: 'success', payload: result})
@@ -62,10 +44,8 @@ mongoose.connect(URL, {
 })
     .then( async ()=>{
         console.log('DB Connected!!')
-        const products = await productModel.find()
-        const cart = await cartModel.create()
-        
-        io.on('connection', socket => {
+
+        io.on('connection', async socket => {
             socket.on('new-product', async data => {
                 console.log(data)
 
@@ -94,8 +74,16 @@ mongoose.connect(URL, {
 
                 io.emit('logs', chat)
             })
+            socket.on('new-cart', async () =>{
+                const newCart = new cartModel({products:[]})
+                await newCart.save()
+
+                const cartId = newCart._id
+
+                io.emit('cart-id', cartId)
+            })
         })
     })
     .catch(e => {
-        console.log("Can't connect to DB");
+        console.log("Can't connect to DB" + e);
     })

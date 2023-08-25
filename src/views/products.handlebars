@@ -23,9 +23,8 @@
                 <td>{{this.stock}}</td>
                 <td>{{this.category}}</td>
                 <td>
-                    <button
-                    onclick="addProduct('{{this._id}}')"
-                    class="btn btn-primary"><i class="fa-solid fa-cart-plus"></i>
+                    <button value="{{this._id}}" class="btn btn-primary" id = "addToCart">
+                        <i class="fa-solid fa-cart-plus"></i>
                     </button>
                 </td>
             </tr>
@@ -40,4 +39,5 @@
     <button><a href="{{nextLink}}">NEXT</a></button>
 {{/if}}
 
+<script src="/socket.io/socket.io.js"></script>
 <script src="../public/cart.js"></script>

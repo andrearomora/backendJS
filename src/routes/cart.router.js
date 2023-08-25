@@ -15,32 +15,46 @@ router.get('/:cid', async (req, res) => {
     res.send(result)
 })
 
-
-router.get('/:idc', async (req, res) => {
-    const idc = parseInt(req.params.idc)
-
-    // const result = await cartManager.getProductById(idc)
-    // res.send(result)
-})
-
-router.post('/', async (req, res) => {
-    const cartGenerated = await cartModel.create({products: []})
-    //await cartGenerated.save()
-    res.send(cartGenerated)
-})
-
 router.post('/:cid/product/:pid', async (req, res) => {
     const cid = req.params.cid
     const pid = req.params.pid
-    const quantity = parseInt(req.body.quantity) || 1
+    let quantity = parseInt(req.body.quantity)
+    console.log(quantity)
+    let exist = false
+    let prodId = ''
+    
 
     const cart = await cartModel.findOne({_id:cid})
-    cart.products.push({product: pid, quantity})
-    await cartModel.updateOne({cid,cart})
+    console.log("i'm the cart" + cart)
+    let prod = ''
+    const cartProducts = cart.products
+
+    await cartProducts.forEach( async product => {
+        let thisProdID = product.product._id.toString()
+   
+        console.log("i'm in the for" + thisProdID)
+
+        if( thisProdID == pid) {
+            console.log("i'm in the if EXISTO")
+            quantity = quantity + product.quantity
+            product.quantity = quantity
+            prodId = product._id
+            exist = true
+            await cart.save()
+        }
+    });
+
+    if(exist==false){
+    //     prod = await cart.products.updateOne({_id:prodId},{quantity:quantity})
+
+    //     // prod = {product:pid, quantity:quantity}
+    //     // await prod.save()
+    // }else{
+        cart.products.push({product: pid, quantity})
+        //await cart.save()
+    }
 
     res.send(cart)
 })
-
-
 
 export default router
