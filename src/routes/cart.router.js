@@ -25,14 +25,12 @@ router.post('/:cid/product/:pid', async (req, res) => {
     
 
     const cart = await cartModel.findOne({_id:cid})
-    console.log("i'm the cart" + cart)
     let prod = ''
     const cartProducts = cart.products
 
     await cartProducts.forEach( async product => {
         let thisProdID = product.product._id.toString()
-   
-        console.log("i'm in the for" + thisProdID)
+
 
         if( thisProdID == pid) {
             console.log("i'm in the if EXISTO")
@@ -45,16 +43,64 @@ router.post('/:cid/product/:pid', async (req, res) => {
     });
 
     if(exist==false){
-    //     prod = await cart.products.updateOne({_id:prodId},{quantity:quantity})
-
-    //     // prod = {product:pid, quantity:quantity}
-    //     // await prod.save()
-    // }else{
+    
         cart.products.push({product: pid, quantity})
-        //await cart.save()
+        await cart.save()
     }
 
     res.send(cart)
 })
+
+
+router.delete('/:cid/products/:pid', async (req, res) => {
+    const cartId = req.params.cid; 
+    const productId = req.params.pid; 
+
+    try {
+        const cart = await cartModel.findOne({_id:cartId})
+        const cartProducts = cart.products
+        const newCart = cartProducts.filter((item) => item._id !== productId)
+        
+        cartProducts = newCart
+
+        await cart.save()
+
+        res.status(200).json({ message: 'Product deleted' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error deleting the product' });
+    }
+});
+
+router.put('/:cid', async (req, res) => {
+    const cartId = req.params.cid; 
+    const products = req.body.products; 
+
+    try {
+        
+        const cart = await cartModel.findOne({_id:cartId})
+        const cartProducts = cart.products
+        cartProducts = products
+        await cart.save()
+
+        res.status(200).json({ message: 'Cart updated' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error updating the cart' });
+    }
+});
+
+router.delete('/:cid', async (req, res) => {
+    const cartId = req.params.cid; // ID del carrito
+
+    try {
+        const cart = await cartModel.findOne({_id:cartId})
+        const cartProducts = cart.products
+        cartProducts = []
+        await cart.save()
+
+        res.status(200).json({ message: 'Todos los productos fueron eliminados del carrito' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al eliminar los productos del carrito' });
+    }
+});
 
 export default router

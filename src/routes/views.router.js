@@ -5,7 +5,6 @@ import chatModel from '../DAO/mongoManager/chat.model.js'
 //import ProductManager from '../DAO/manager/ProductManager.js'
 
 const router = Router()
-//const productManager = new ProductManager()
 
 router.get('/', async (req,res) => {
 
@@ -58,6 +57,7 @@ router.get('/products', async (req, res) => {
 
     res.render('products', result)
     console.log(JSON.stringify(result))
+
 })
 
 router.get('/products-realtime', async (req, res) => {

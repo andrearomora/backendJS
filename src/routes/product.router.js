@@ -1,4 +1,5 @@
 import { Router } from 'express'
+
 import productModel from '../DAO/mongoManager/product.model.js'
 //import ProductManager from '../DAO/manager/ProductManager.js'
 
@@ -12,41 +13,49 @@ router.post('/', async (req,res) => {
 })
 
 router.get('/', async (req, res) => {
-    // let limit = parseInt(req.query?.limit || 10) 
-    // let page = parseInt(req.query?.page || 1) 
-    // let sort = parseInt(req.query?.sort)
-    // let query = parseInt(req.query?.query)
+    // const limit = parseInt(req.query?.limit || 10) 
+    // const page = parseInt(req.query?.page || 1) 
+    // const sort = parseInt(req.query?.sort)
+    // const queryParams = req.query?.query || ''
+    // const query = {}
 
-    // const options = {
-    //     page: page,
-    //     limit: limit,
-    //     sort: sort,
+    // if (queryParams){
+    //     const field = queryParams.split(',')[0]
+    //     const value = queryParams.split(',')[1]
+
+    //     if(!isNaN(parseInt(value))) value = parseInt(value)
+
+    //     query[field] = value
+    // }
+    // //const cartID = await cartModel.findOne({})
+
+    // const result = await productModel.paginate(query, {
+    //     page,
+    //     limit,
+    //     sort,
     //     lean: true
-    // }
-
-    // const products = await productModel.paginate({query}, options)
+    // })
     
-    // products.prevLink =  products.hasPrevPage ? `/?page=${products.prevPage}&limit=${limit}` : ''
-    // products.nextLink =  products.hasNextPage ? `/?page=${products.nextPage}&limit=${limit}` : ''
+    // result.prevLink =  result.hasPrevPage ? `/products/?page=${result.prevPage}&limit=${limit}` : ''
+    // result.nextLink =  result.hasNextPage ? `/products/?page=${result.nextPage}&limit=${limit}` : ''
 
-    // res.send(products)
+    // const totalPages = Math.ceil(result.totalCount / limit);
 
-    // if(limit){
-    //     let productsFiltered = await productModel.find().limit(limit).lean().exec()
-    //     res.send(productsFiltered)
-    // }else{
-    //     res.send(products)
-    //}
-    // if(limit){
-    //     let productsFiltered = []
-    //     for (let i = 0; i < limit && i < products.length; i++) {
-    //         productsFiltered.push(products[i])
-    //     }
-    //     res.send(productsFiltered)
-    // }else{
-    //     res.send(products)
+    // const response = {
+    //     status: 'succes',
+    //     payload: result.products,
+    //     totalPages,
+    //     prevPage: hasPrevPage ? page - 1 : null,
+    //     nextPage: hasNextPage ? page + 1 : null,
+    //     page,
+    //     hasPrevPage,
+    //     hasNextPage,
+    //     prevLink: hasPrevPage ? `/api/products?limit=${limit}&page=${result.prevPage}&sort=${sort}&query=${query}` : null,
+    //     nextLink: hasNextPage ? `/api/products?limit=${limit}&page=${result.nextPage}&sort=${sort}&query=${query}` : null
     // }
 
+    // res.render('products', result)
+    // console.log(JSON.stringify(response))
 })
 
 router.get('/:pid', async (req, res) => {
