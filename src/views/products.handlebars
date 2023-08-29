@@ -1,6 +1,17 @@
 <h2>Products</h2>
 <a href="/form-products">Create Products</a>
 <hr>
+<div>
+    <h2>WELCOME!! <strong>{{user.first_name}} {{user.last_name}}</strong></h2>
+    🍃
+    <span><strong>Age: </strong></span>{{user.age}}
+    🍃
+    <span><strong>Email: </strong></span>{{user.email}}
+    {{#if admin}}
+        ⚡
+        <strong>ROL: ADMIN</strong>
+    {{/if}}
+</div>
 <table border="1">
     <thead>
         <td>Title</td>
@@ -41,3 +52,4 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="../public/cart.js"></script>
+

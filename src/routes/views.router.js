@@ -8,11 +8,23 @@ const router = Router()
 
 router.get('/', async (req,res) => {
 
-    const products = await productModel.find().lean().exec()
-    res.render('index', products)
-    console.log({result: 'success', payload: JSON.stringify(products)})
-
+    if (req.session?.user) {
+        res.redirect('/products')
+    }
+    res.render('login', {})
 })
+
+router.get('/register', (req,res) => {
+    if (req.session?.user) {
+        res.redirect('/products')
+    }
+    res.render('register', {})
+})
+
+function auth(req, res, next) {
+    if (req.session?.user) return next()
+    res.redirect('/')
+}
 
 router.get('/chat', async (req,res) => {
     const messages = await chatModel.find().lean().exec()
@@ -26,7 +38,7 @@ router.get('/cart/:cid', async (req,res) => {
     res.render('cart', {cart})
 })
 
-router.get('/products', async (req, res) => {
+router.get('/products', auth, async (req, res) => {
     
     const limit = parseInt(req.query?.limit || 10) 
     const page = parseInt(req.query?.page || 1) 
@@ -54,7 +66,10 @@ router.get('/products', async (req, res) => {
     
     result.prevLink =  result.hasPrevPage ? `/products/?page=${result.prevPage}&limit=${limit}` : ''
     result.nextLink =  result.hasNextPage ? `/products/?page=${result.nextPage}&limit=${limit}` : ''
-
+    result.user =  req.session.user
+    result.admin = false
+    if(req.session.user.rol == "admin") result.admin = true
+    
     res.render('products', result)
     console.log(JSON.stringify(result))
 

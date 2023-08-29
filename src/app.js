@@ -1,11 +1,12 @@
 import express from 'express'
+import session from 'express-session'
+import MongoStore from 'connect-mongo'
 import handlebars from 'express-handlebars'
 import { Server } from 'socket.io'
 import productRouter from './routes/product.router.js'
 import cartRouter from './routes/cart.router.js'
-//import chatRouter from './routes/chat.router.js'
 import viewsRouter from './routes/views.router.js'
-//import ProductManager from './DAO/manager/ProductManager.js'
+import sessionRouter from './routes/session.router.js'
 import __dirname from './utils.js'
 import mongoose from 'mongoose'
 import productModel from './DAO/mongoManager/product.model.js'
@@ -17,12 +18,10 @@ app.use("/public", express.static(__dirname + "/public"))
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-app.engine('handlebars', handlebars.engine())
-app.set('views', __dirname + '/views')
-app.set('view engine', 'handlebars')
+app.engine('handlebars', handlebars.engine()) //Corre el motor
+app.set('views', __dirname + '/views') //Setea la vista
+app.set('view engine', 'handlebars') //Establece el motor de plantilla
 
-
-app.use('/', viewsRouter)
 app.use('/api/products', productRouter)
 app.use('/api/carts', cartRouter)
 
@@ -31,13 +30,30 @@ app.post('/', async(req,res) => {
     const result = await productModel.create(req.body)
     res.send({status: 'success', payload: result})
 })
-// -------------------
 
 mongoose.set('strictQuery', false)
 const httpServer = app.listen(8080)
 const io = new Server(httpServer)
 
 const URL = 'mongodb+srv://andrearomora:MacBook2023@ecommerce.py0l9lo.mongodb.net/?retryWrites=true&w=majority'
+
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: URL,
+        dbName: 'ecommerce',
+        mongoOptions:{
+            useNewUrlParser:true,
+            useUnifiedTopology: true
+        },
+        ttl: 100
+    }),
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+}))
+
+app.use('/api/session', sessionRouter)
+app.use('/', viewsRouter)
 
 mongoose.connect(URL, {
     dbName: 'ecommerce'
