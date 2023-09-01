@@ -12,6 +12,8 @@ import mongoose from 'mongoose'
 import productModel from './DAO/mongoManager/product.model.js'
 import cartModel from './DAO/mongoManager/cart.model.js'
 import chatModel from './DAO/mongoManager/chat.model.js'
+import initializePassword from './config/passport.config.js'
+import passport from 'passport'
 
 const app = express()
 app.use("/public", express.static(__dirname + "/public"))
@@ -54,6 +56,10 @@ app.use(session({
 
 app.use('/api/session', sessionRouter)
 app.use('/', viewsRouter)
+
+initializePassword()
+app.use(passport.initialize())
+app.use(passport.session())
 
 mongoose.connect(URL, {
     dbName: 'ecommerce'
