@@ -12,8 +12,9 @@ import mongoose from 'mongoose'
 import productModel from './DAO/mongoManager/product.model.js'
 import cartModel from './DAO/mongoManager/cart.model.js'
 import chatModel from './DAO/mongoManager/chat.model.js'
-import initializePassword from './config/passport.config.js'
+import initializePassport from './config/passport.config.js'
 import passport from 'passport'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 app.use("/public", express.static(__dirname + "/public"))
@@ -54,12 +55,12 @@ app.use(session({
     saveUninitialized: true
 }))
 
-app.use('/api/session', sessionRouter)
-app.use('/', viewsRouter)
-
-initializePassword()
+initializePassport()
 app.use(passport.initialize())
 app.use(passport.session())
+
+app.use('/api/session', sessionRouter)
+app.use('/', viewsRouter)
 
 mongoose.connect(URL, {
     dbName: 'ecommerce'
@@ -86,7 +87,7 @@ mongoose.connect(URL, {
                 io.emit('logs', chat)
             })
             socket.on('message', async data => {
-                console.log(data);
+                console.log(data)
                 const newMessage = data
 
                 const messageCreated = new chatModel(newMessage)
@@ -107,5 +108,5 @@ mongoose.connect(URL, {
         })
     })
     .catch(e => {
-        console.log("Can't connect to DB" + e);
+        console.log("Can't connect to DB" + e)
     })

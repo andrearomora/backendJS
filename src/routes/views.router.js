@@ -7,7 +7,7 @@ import chatModel from '../DAO/mongoManager/chat.model.js'
 const router = Router()
 
 router.get('/', async (req,res) => {
-
+    console.log(req.session)
     if (req.session?.user) {
         res.redirect('/products')
     }
@@ -23,8 +23,16 @@ router.get('/register', (req,res) => {
 
 function auth(req, res, next) {
     if (req.session?.user) return next()
+    console.log("-------------COOKIE----------------" + res.cookie('keyCookieForJWT'))
+    // else {
+    //     if (req.session?.user) return next()
+    // }
     res.redirect('/')
 }
+
+router.get('/fail-github', (req,res) => {
+    res.render('fail_login', {})
+})
 
 router.get('/chat', async (req,res) => {
     const messages = await chatModel.find().lean().exec()

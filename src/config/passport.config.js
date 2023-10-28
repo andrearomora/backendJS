@@ -1,7 +1,9 @@
 import passport from "passport"
 import local from "passport-local"
+import passportJWT, { ExtractJwt } from 'passport-jwt'
 import UserModel from "../DAO/mongoManager/users.model.js"
-import { createHash, isValidPassword } from "../utils.js"
+import CartModel from "../DAO/mongoManager/cart.model.js"
+import { createHash, isValidPassword, generateToken, authToken, extractCookie } from "../utils.js"
 import GitHubStrategy from 'passport-github2'
 
 //App ID: 384129
@@ -9,8 +11,10 @@ import GitHubStrategy from 'passport-github2'
 //dee1a2a092730055b557cf27f661402f67666840
 
 const LocalStrategy = local.Strategy
+const JWTstrategy = passportJWT.Strategy
+const JWTextract = passportJWT.ExtractJwt
 
-const initializePassword = () => {
+const initializePassport = () => {
     
     passport.use('github', new GitHubStrategy(
         {
@@ -21,24 +25,46 @@ const initializePassword = () => {
         async(accesToken, refreshToken, profile, done)=>{
             console.log(profile)
             try{
-                const user = await UserModel.findOne({ email: profile._json.email})
+                const email = profile._json.login
+                console.log(email)
+                const user = await UserModel.findOne({ email }).lean().exec()
                 if(user){
                     console.log('User already exist' + email)
-                    return done(null, user)
+                }else{
+                    console.log('User does not exist' + email)
+                    const cart = new CartModel
+                    const newUser = {
+                        first_name: profile._json.name,
+                        email,
+                        last_name: profile._json.username,
+                        age: profile._json.public_repos,
+                        social: 'github',
+                        cart: cart._id,
+                        rol: 'user',
+                        password: ''
+                    }
+                    const result = await UserModel.create(newUser)
+                    console.log('user created: ' + result)
                 }
-                const newUser = {
-                    first_name: profile._json.name,
-                    email: profile._json.email,
-                    last_name: profile._json.username,
-                    age: profile._json.public_repos,
-                    rol: 'user',
-                    password: ''
-                }
-                const result = await UserModel.create(newUser)
-                return done(null, result)
-            }catch(e){
+                
+                const token = generateToken(user)
+                user.token = token
+                return done(null, user)
+                
+            }catch(e){ 
                 return done('Error to login with GitHub' + e)
             }
+        }
+    ))
+
+    passport.use('jwt', new JWTstrategy(
+        {
+            jwtFromRequest: ExtractJwt.fromExtractors([extractCookie]),
+            secretOrKey: 'secretForJWT'
+        },
+        (jwt_payload, done) => {
+            console.log("-------JWT PAYLOAD-------"+{jwt_payload})
+            return done(null, jwt_payload)
         }
     ))
 
@@ -62,6 +88,7 @@ const initializePassword = () => {
                     last_name,
                     age,
                     rol: 'user',
+                    social: 'local',
                     password: createHash(password)
                 }
                 const result = await UserModel.create(newUser)
@@ -81,6 +108,10 @@ const initializePassword = () => {
                     console.log('User does not exist')
                     return done (null, false)
                 }
+                if(user.social!='local'){
+                    console.log('You need to login with ' + user.social)
+                    return done(null, false)
+                }
                 if(!isValidPassword(user,password)){
                     console.log('Password not valid')
                     return done(null, false)
@@ -92,15 +123,30 @@ const initializePassword = () => {
         }
     ))
 
+    passport.use('current', new LocalStrategy(
+        { usernameField: 'email' },
+        async (username, password, done) => {
+            try{
+                const user = await UserModel.findOne({email: username}).lean().exec()
+                return done(null,user)
+            }catch(e){
+                return done('Error' + error)
+            }
+        }
+    ))
+
     passport.serializeUser((user,done) => {
+        console.log("--SERIALIZE USER--" + user._id)
         done(null, user._id)
     })
 
     passport.deserializeUser(async (id, done) => {
+        console.log("--DE--SERIALIZE USER--")
         const user = await UserModel.findById(id)
+        console.log(user)
         done(null, user)
     })
 
 }
 
-export default initializePassword
+export default initializePassport

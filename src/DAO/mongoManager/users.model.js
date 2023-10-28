@@ -8,10 +8,19 @@ const userSchema = new mongoose.Schema({
     last_name: { type: String, require: true },
     age: { type: Number, require: true },
     password: { type: String, require: true },
+    cart: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'carts'
+    },
+    social: { type: String, require: true },
     rol: { type: String, enum: ["admin","user"], default:"user"}
 })
 
-//mongoose.set('strictQuery', false)
+userSchema.pre('findOne', function(){
+    this.populate('cart.carts')
+})
+
+mongoose.set('strictQuery', false)
 
 const userModel = mongoose.model(usersCollection, userSchema)
 

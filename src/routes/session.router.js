@@ -21,16 +21,19 @@ router.post(
 router.get(
     '/login-github',
     passport.authenticate('github',{scope: ['user:email']}),
-    async (req,res) => {})
+    async (req,res) => {
+        req.session.user = req.user
+    })
 
 router.get(
     '/githubcallback',
-    passport.authenticate('github',{failureRedirect: '/login'}),
+    passport.authenticate('github',{failureRedirect: '/fail-github'}),
     async (req,res) => {
         console.log('Callback:', req.user)
-        req.session.user = req.user
-        console.log(req.session)
-        res.redirect('/products')
+        res.cookie('keyCookieForJWT', req.user.token).redirect('/products')
+        // req.session.user = req.user
+        // console.log(req.session)
+        // res.redirect('/products')
     })
 
 router.get('/logout', (req, res) => {
@@ -38,6 +41,14 @@ router.get('/logout', (req, res) => {
         if(err) return res.send('Logout error')
         return res.redirect('/login')
     })
+}) 
+
+router.get('/current', 
+    passport.authenticate('jwt'),
+    (req, res) => {
+        console.log(req.user)
+        const { user } = req
+        res.render('current', user)
 })
 
 export default router
